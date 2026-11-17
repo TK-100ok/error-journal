@@ -1,58 +1,68 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# エラー日誌（仮タイトル）
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+開発中に発生したエラーと、その原因・解決方法を記録して振り返るためのアプリです。
 
-## About Laravel
+## 作成した背景
+開発中にエラーが発生したときは、Notionにエラー文・エラーログ・仮説・原因・解決方法をまとめて記録していました。
+この記録を専用のアプリで管理できれば、より分かりやすく整理でき、あとから振り返りやすくなると考えて作成しました。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 想定ユーザー
+- プログラミング学習中の人
+- 駆け出しのエンジニア
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 使い方の流れ
+1. エラーが発生したら、エラー文・エラーログ・仮説を記録する
+2. 解決したら、原因と解決方法を追記する
+3. 過去の記録を見返して、同じようなエラーが発生したときに役立てる
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 主な機能（開発予定）
+- ユーザー登録・ログイン
+- エラー記録の登録（エラー文・エラーログ・仮説）
+- エラー記録の一覧表示（解決済み・未解決の表示）
+- エラー記録の詳細表示
+- 原因・解決方法の入力
+- 自分のエラー記録のみ閲覧・操作できる
 
-## Learning Laravel
+## 使用技術
+| 分類 | 技術 |
+|---|---|
+| 言語 | PHP |
+| フレームワーク | Laravel 13 |
+| 認証 | Laravel Breeze（Blade） |
+| データベース | MySQL |
+| 開発環境 | Laravel Sail（Docker） |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## テーブル設計
+### users
+| カラム名 | 型 | NULL | 制約 | 内容 |
+|---|---|---|---|---|
+| id | bigint | × | 主キー | |
+| name | string | × | | ユーザー名 |
+| email | string | × | ユニーク | メールアドレス |
+| email_verified_at | timestamp | ○ | | メールアドレス確認日時 |
+| password | string | × | | パスワード |
+| remember_token | string | ○ | | ログイン状態の保持に使用 |
+| created_at | timestamp | ○ | | 作成日時 |
+| updated_at | timestamp | ○ | | 更新日時 |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### error_records
+| カラム名 | 型 | NULL | 制約 | 内容 |
+|---|---|---|---|---|
+| id | bigint | × | 主キー | |
+| user_id | bigint | × | 外部キー（users）、ユーザー削除時に一緒に削除 | 記録したユーザー |
+| error_message | text | × | | エラー文 |
+| error_log | longText | ○ | | エラーログ |
+| hypothesis | text | × | | 仮説 |
+| cause | text | ○ | | 原因（解決後に入力） |
+| solution | text | ○ | | 解決方法（解決後に入力） |
+| created_at | timestamp | ○ | | 作成日時 |
+| updated_at | timestamp | ○ | | 更新日時 |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 開発状況
+- [x] 開発環境の構築
+- [ ] ユーザー登録・ログイン
+- [ ] エラー記録の登録
+- [ ] エラー記録の一覧表示
+- [ ] エラー記録の詳細表示
+- [ ] 原因・解決方法の入力
+- [ ] 自分のエラー記録のみ閲覧・操作できるようにする
